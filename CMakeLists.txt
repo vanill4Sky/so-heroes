@@ -13,6 +13,9 @@ find_package(Threads REQUIRED)
 
 include_directories(${CURSES_INCLUDE_DIR})
 
-add_executable(so-heroes src/main.cpp )
+add_executable(so-heroes src/main.cpp
+               src/map.hpp src/map.cpp
+               src/army.hpp
+               src/treasury.hpp)
 
 target_link_libraries(so-heroes ${CURSES_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
