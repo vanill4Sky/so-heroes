@@ -10,8 +10,7 @@ Dla uproszczenie jedynym typem surowców będzie złoto, a jednostki nie będą 
 ## 2. Wątki
 - **Gracz** – przemieszcza się po mapie gry w celu podnoszenia skarbów lub atakowania przeciwników. Do wykonania pierwszej operacji potrzebuje zasobu *mapa* oraz *skarbiec ze złotem*, natomiast do wykonania drugiej wymagane są zasoby *mapa* oraz *armia*. Dodatkowo gracz będzie pozostawał przez pewien czas w spoczynku - wątek będzie wtedy uśpiony.
 - **Kopalnia złota** – kopalnie posiadają dwa typy aktywności. Pierwszą jest wydobywanie złota (stan podobny do rozmyślania w przypadku problemu ucztujących filozofów), drugą jest transport złota do skarbca. Druga aktywność wymaga zasobu *skarbiec ze złotem* i polega na zwiększeniu jego ilości o pewną wartość.
-\newpage
-- **Siedlisko stworzeń** – podobnie jak kopalnie, siedliska przez pewien czas produkują jednostki, a następnie, jeżeli w skarbcu gracz jest wystarczająco dużo złota, dodają wyprodukowane jednostki do armii. Wymagane zasoby to *armia* i *skarbiec ze złotem*.
+- **Siedlisko stworzeń** – podobnie jak kopalnie, siedliska przez pewien czas produkują jednostki, a następnie, jeżeli w skarbcu jest wystarczająco dużo złota, dodają wyprodukowane jednostki do armii. Wymagane zasoby to *armia* i *skarbiec ze złotem*.
 
 ## 3. Zasoby
 - **Skarbiec ze złotem** – struktura z polem określającym ilość złota w skarbcu.
