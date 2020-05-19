@@ -8,6 +8,7 @@
 
 int soh::player::instance_count{ 0 };
 int soh::player::current_player{ -1 };
+bool soh::player::gameover{ false };
 std::mutex soh::player::mutex;
 std::condition_variable soh::player::cv;
 
@@ -32,7 +33,11 @@ soh::player::~player()
 void soh::player::routine() 
 {
     std::unique_lock<std::mutex> lk(mutex);
-    cv.wait(lk, [id = this->id]{return id == current_player;});
+    cv.wait(lk, [id = this->id]{return id == current_player || gameover;});
+    
+    if (gameover) {
+        return;
+    }
  
     std::cout << "Worker thread " << id << " is processing data\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));

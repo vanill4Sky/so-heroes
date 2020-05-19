@@ -22,6 +22,7 @@ public:
 
     static int instance_count;
     static int current_player;
+    static bool gameover;
     static std::mutex mutex;
     static std::condition_variable cv;
 
