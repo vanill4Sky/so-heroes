@@ -6,6 +6,7 @@
 
 #include "treasury.hpp"
 #include "army.hpp"
+#include "visualization.hpp"
 
 namespace soh
 {
@@ -13,7 +14,8 @@ namespace soh
 class dwelling
 {
 public:
-    dwelling(size_t id, std::string name, soh::treasury& treasury, soh::army& army);
+    dwelling(size_t id, std::string name, soh::treasury& treasury, 
+        soh::army& army, soh::visualization& visualization);
     ~dwelling();
 
 private:
@@ -26,6 +28,8 @@ private:
     soh::treasury& treasury;
     soh::army& army;
     std::default_random_engine rng;
+    size_t produced_amount;
+    soh::visualization& visualization;
     std::thread thread;
 };
     

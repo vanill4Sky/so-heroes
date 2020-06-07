@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "treasury.hpp"
+#include "visualization.hpp"
 
 namespace soh
 {
@@ -12,7 +13,8 @@ namespace soh
 class gold_mine
 {
 public:
-    gold_mine(size_t id, std::string name, soh::treasury& treasury);
+    gold_mine(size_t id, std::string name, soh::treasury& treasury, 
+    soh::visualization& visualization);
     ~gold_mine();
 
 private:
@@ -24,6 +26,8 @@ private:
     std::string name;
     soh::treasury& treasury;
     std::default_random_engine rng;
+    size_t extracted_amount;
+    soh::visualization& visualization;
     std::thread thread;
 };
     

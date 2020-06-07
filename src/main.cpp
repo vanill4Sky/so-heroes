@@ -7,22 +7,31 @@
 #include "treasury.hpp"
 #include "player.hpp"
 #include "gold_mine.hpp"
+#include "dwelling.hpp"
+#include "visualization.hpp"
 
 int main(int argc, char* argv[])
 {
+	auto& visualization{ soh::visualization::get_instance() };
+	std::atomic<bool> is_game_started{ false };
+
 	soh::treasury treasury;
 	soh::army army;
 	soh::map map{ 10, 10, 0.5f, 0.5f };
 
-	soh::gold_mine gold_mine_0{ "mine_0", treasury };
-	soh::gold_mine gold_mine_1{ "mine_1", treasury };
-	soh::gold_mine gold_mine_2{ "mine_2", treasury };
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	soh::gold_mine gold_mine_0{ 0, "mine_0", treasury, visualization };
+	soh::gold_mine gold_mine_1{ 1, "mine_1", treasury, visualization };
+	soh::gold_mine gold_mine_2{ 2, "mine_2", treasury, visualization };
 
-	{
-		std::scoped_lock lk{ treasury.mutex };
-		std::cout << treasury.gold << '\n';
-	}
+	soh::dwelling dwelling_0{ 0, "dwelling_0", treasury, army, visualization };
+	soh::dwelling dwelling_1{ 1, "dwelling_0", treasury, army, visualization };
+	soh::dwelling dwelling_2{ 2, "dwelling_0", treasury, army, visualization };
+
+	treasury.ready = true;
+
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+
+	treasury.ready = false;
 
 	// soh::player player_0{ "player_0", treasury, army, map };
 	// soh::player player_1{ "player_1", treasury, army, map };
@@ -43,6 +52,7 @@ int main(int argc, char* argv[])
     // }
     // soh::player::cv.notify_all();
 
-
+	visualization.halt();
+	
 	return 0;
 }

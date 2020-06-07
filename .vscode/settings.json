@@ -50,6 +50,8 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp",
-        "bit": "cpp"
-    }
+        "bit": "cpp",
+        "iomanip": "cpp"
+    },
+    "clang-format.executable": "usr/bin/clang-format"
 }

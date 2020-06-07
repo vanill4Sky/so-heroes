@@ -7,6 +7,7 @@
 #include "army.hpp"
 #include "treasury.hpp"
 #include "map.hpp"
+#include "visualization.hpp"
 
 namespace soh
 {
@@ -15,7 +16,7 @@ class player
 {
 public:
     player(std::string name, soh::treasury& treasury, 
-        soh::army& army, soh::map& map);
+        soh::army& army, soh::map& map, soh::visualization& visualization);
     ~player();
 
     void routine();
@@ -32,6 +33,7 @@ private:
     soh::army& army;
     soh::map& map;
     int id;
+    soh::visualization& visualization;
     std::thread thread;
 };
 

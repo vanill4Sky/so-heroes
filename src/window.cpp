@@ -6,10 +6,12 @@
 
 #include "curses_wrapper.hpp"
 
-soh::scoped_color::scoped_color(const soh::window& window, unsigned int fg, unsigned int bg) 
-    : window{window}, fg{fg}, bg{bg}
+soh::scoped_color::scoped_color(const soh::window& window, soh::color fg, soh::color bg)
+    : window{window}
+    , fg{ static_cast<unsigned int>(fg) }
+    , bg{ static_cast<unsigned int>(bg) }
 { 
-    window.set_color(fg, bg);
+    window.set_color(this->fg, this->bg);
 }
 
 soh::scoped_color::~scoped_color()
@@ -36,7 +38,7 @@ soh::window::window(soh::window&& other)
 soh::window::~window()
 {
     // :((
-    if(win_ptr != nullptr && win_ptr != stdscr)
+    if (win_ptr != nullptr && win_ptr != stdscr)
     {
         wborder(win_ptr, ' ', ' ', ' ',' ',' ',' ',' ',' ');
         update();
@@ -61,23 +63,26 @@ void soh::window::stop() const
     wgetch(win_ptr);
 }
 
-void soh::window::print(std::string_view text, size_t row, size_t col, size_t padding) const
+void soh::window::print(std::string_view text, size_t row, size_t col, 
+    size_t header_height, size_t padding) const
 {
-    mvwprintw(win_ptr, row + padding, col + padding, "%s" ,text.data());
+    mvwprintw(win_ptr, row + padding + header_height, col + padding, "%s" ,text.data());
 }
 
-void soh::window::print_centered(std::string_view text, size_t row, size_t padding) const
+void soh::window::print_centered(std::string_view text, size_t row,
+    size_t header_height, size_t padding) const
 {
     assert(row < get_size().y);
     assert(get_size().x >= text.size());
 
     auto col{ static_cast<size_t>((get_size().x -  text.size()) / 2) };
-    print(text, row, col, padding);
+    print(text, row, col, header_height, padding);
 }
 
 void soh::window::print_title(std::string_view text) const
 {
-    print_centered(text, 0, 0);
+    print_centered(text, 0, 0, 0);
+    update();
 }
 
 utils::vec2<size_t> soh::window::get_size() const
@@ -97,7 +102,7 @@ void soh::window::unset_color(unsigned int fg, unsigned int bg) const
     wattroff(win_ptr, COLOR_PAIR(soh::curses_wrapper::color_pair_id(fg, bg)));
 }
 
-soh::scoped_color soh::window::set_scoped_color(unsigned int fg, unsigned int bg) const
+soh::scoped_color soh::window::set_scoped_color(soh::color fg, soh::color bg) const
 {
     return {*this, fg, bg};
 }

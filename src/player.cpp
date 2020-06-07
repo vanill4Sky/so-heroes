@@ -13,12 +13,13 @@ std::mutex soh::player::mutex;
 std::condition_variable soh::player::cv;
 
 soh::player::player(std::string name, soh::treasury& treasury, 
-    soh::army& army, soh::map& map)
+    soh::army& army, soh::map& map, soh::visualization& visualization)
     : name{ std::move(name) }
     , treasury{ treasury }
     , army{ army }
     , map{ map }
     , id{ soh::player::instance_count }
+    , visualization{ visualization }
     , thread{ &soh::player::routine, this }
 {
     ++soh::player::instance_count;

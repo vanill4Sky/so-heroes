@@ -33,6 +33,7 @@ enum class player_state
     waiting,
     fighting,
     collecting,
+    finish,
     other
 };
 
@@ -55,14 +56,33 @@ public:
     visualization(soh::visualization const&) = delete;
     void operator=(visualization const&) = delete;
 
+    void add_gold_mine(size_t id, std::string name);
+    void add_dwelling(size_t id, std::string name);
+    void add_player(size_t id, std::string name);
+
+    void update_gold_mine_info(size_t id, soh::gold_mine_state new_state, size_t extracted_amount);
+    void update_dwelling_info(size_t id, soh::dwelling_state new_state, size_t produced_amount);
+    void update_player_info(size_t id, soh::player_state new_state);
+
+    void halt() const;
+
 private:
     visualization();
 
+    std::string get_description(soh::gold_mine_state state) const;
+    std::string get_description(soh::dwelling_state state) const;
+    std::string get_description(soh::player_state state) const;
+
 private:
+    const int default_column_width{ 20 };
 
     std::mutex mutex_terminal;
     soh::curses_wrapper cw;
     soh::window& main_window;
+    soh::window player_info_window;
+    soh::window gold_mine_info_window;
+    soh::window dwelling_info_window;
+    soh::window game_map_window;
     std::vector<soh::thread_info<gold_mine_state>> gold_mine_infos;
     std::vector<soh::thread_info<dwelling_state>> dwelling_infos;
     std::vector<soh::thread_info<player_state>> player_infos;
