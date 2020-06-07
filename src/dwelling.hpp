@@ -5,24 +5,26 @@
 #include <thread>
 
 #include "treasury.hpp"
+#include "army.hpp"
 
 namespace soh
 {
 
-class gold_mine
+class dwelling
 {
 public:
-    gold_mine(size_t id, std::string name, soh::treasury& treasury);
-    ~gold_mine();
+    dwelling(size_t id, std::string name, soh::treasury& treasury, soh::army& army);
+    ~dwelling();
 
 private:
     void routine();
-    int dig();
-    void transport(int gold_amount);
+    int produce(int creature_price);
+    void add_creatures(int creature_count);
 
     size_t id;
     std::string name;
     soh::treasury& treasury;
+    soh::army& army;
     std::default_random_engine rng;
     std::thread thread;
 };

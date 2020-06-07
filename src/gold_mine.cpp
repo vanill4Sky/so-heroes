@@ -2,8 +2,9 @@
 
 #include <algorithm>
 
-soh::gold_mine::gold_mine(std::string name, soh::treasury& treasury)
-    : name{ std::move(name) }
+soh::gold_mine::gold_mine(size_t id, std::string name, soh::treasury& treasury)
+    : id{ id }
+    , name{ std::move(name) }
     , treasury{ treasury }
     , rng{ std::random_device{}() }
     , thread{ &soh::gold_mine::routine, this }

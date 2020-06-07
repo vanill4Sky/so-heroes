@@ -18,6 +18,11 @@ add_executable(so-heroes src/main.cpp
                src/army.hpp
                src/treasury.hpp
                src/player.hpp src/player.cpp
-               src/gold_mine.hpp src/gold_mine.cpp)
+               src/gold_mine.hpp src/gold_mine.cpp
+               src/dwelling.hpp src/dwelling.cpp
+               src/window.hpp src/window.cpp
+               src/curses_wrapper.hpp src/curses_wrapper.cpp
+               src/visualization.hpp src/visualization.cpp
+               src/utils.hpp)
 
 target_link_libraries(so-heroes ${CURSES_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
