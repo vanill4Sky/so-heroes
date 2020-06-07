@@ -4,6 +4,8 @@
 #include <iostream>
 #include <utility>
 
+#include "utils.hpp"
+
 soh::visualization::visualization()
     : main_window{ cw.get_main_window() }
     , player_info_window{ cw.make_window(
@@ -70,21 +72,41 @@ void soh::visualization::add_player(size_t id, std::string name)
 void soh::visualization::update_gold_mine_info(
     size_t id, soh::gold_mine_state new_state, size_t extracted_amount)
 {
+    gold_mine_infos[id].state = new_state;
+    auto row{ utils::format_row(
+        std::make_pair(gold_mine_infos[id].name, default_column_width),
+        std::make_pair(get_description(new_state), default_column_width),
+        std::make_pair(extracted_amount, default_column_width)) };
+
     std::scoped_lock lk{ mutex_terminal };
-    //std::cout << gold_mine_infos.at(id).name << " is " << get_description(new_state) << " extracted: " << extracted_amount << '\n';
+    gold_mine_info_window.print(row, id, 0);
+    gold_mine_info_window.update();
 }
 
 void soh::visualization::update_dwelling_info(
     size_t id, soh::dwelling_state new_state, size_t produced_amount)
 {
+    dwelling_infos[id].state = new_state;
+    auto row{ utils::format_row(
+        std::make_pair(dwelling_infos[id].name, default_column_width),
+        std::make_pair(get_description(new_state), default_column_width),
+        std::make_pair(produced_amount, default_column_width)) };
+
     std::scoped_lock lk{ mutex_terminal };
-    //std::cout << dwelling_infos.at(id).name << " is " << get_description(new_state) << " produced: " << produced_amount << '\n';
+    dwelling_info_window.print(row, id, 0);
+    dwelling_info_window.update();
 }
 
 void soh::visualization::update_player_info(size_t id, soh::player_state new_state)
 {
+    player_infos[id].state = new_state;
+    auto row{ utils::format_row(
+        std::make_pair(player_infos[id].name, default_column_width),
+        std::make_pair(get_description(new_state), default_column_width)) };
+
     std::scoped_lock lk{ mutex_terminal };
-    //std::cout << player_infos.at(id).name << " is " << get_description(new_state) << '\n';
+    player_info_window.print(row, id, 0);
+    player_info_window.update();
 }
 
 void soh::visualization::halt() const

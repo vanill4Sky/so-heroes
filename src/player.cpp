@@ -23,6 +23,7 @@ soh::player::player(std::string name, soh::treasury& treasury,
     , thread{ &soh::player::routine, this }
 {
     ++soh::player::instance_count;
+    visualization.add_player(id, this->name);
 }
 
 soh::player::~player()
@@ -33,18 +34,60 @@ soh::player::~player()
 
 void soh::player::routine() 
 {
-    std::unique_lock<std::mutex> lk(mutex);
-    cv.wait(lk, [id = this->id]{return id == current_player || gameover;});
+    while (true) 
+    {
+        std::unique_lock<std::mutex> lk(mutex);
+        cv.wait(lk, [id = this->id]{return id == current_player || gameover;});
+        
+        if (gameover) {
+            return;
+        }
+
+        bool found_gold{ move_to_gold() };
+        collect_gold(found_gold);
+        bool found_opponent{ move_to_opponent() };
+        fight_opponent(found_opponent);
+        visualization.update_player_info(id, soh::player_state::waiting);
+
+        if (!found_gold && !found_opponent) {
+            gameover = true;
+        }
+
+        current_player = (current_player + 1) % instance_count;
     
-    if (gameover) {
-        return;
+        lk.unlock();
+        cv.notify_all();
     }
- 
-    std::cout << "Worker thread " << id << " is processing data\n";
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::cout << "Worker thread " << id << " signals data processing completed\n";
-    current_player = (current_player + 1) % instance_count;
- 
-    lk.unlock();
-    cv.notify_all();
+}
+
+bool soh::player::move_to_gold()
+{
+    visualization.update_player_info(id, soh::player_state::moving);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    return true;
+}
+
+void soh::player::collect_gold(bool found_gold)
+{
+    if (found_gold) {
+        visualization.update_player_info(id, soh::player_state::collecting);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+}
+
+bool soh::player::move_to_opponent()
+{
+    visualization.update_player_info(id, soh::player_state::moving);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    return true;
+}
+
+void soh::player::fight_opponent(bool found_opponent)
+{
+    if (found_opponent) {
+        visualization.update_player_info(id, soh::player_state::fighting);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
 }

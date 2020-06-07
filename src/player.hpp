@@ -8,6 +8,7 @@
 #include "treasury.hpp"
 #include "map.hpp"
 #include "visualization.hpp"
+#include "utils.hpp"
 
 namespace soh
 {
@@ -20,6 +21,10 @@ public:
     ~player();
 
     void routine();
+    bool move_to_gold();
+    void collect_gold(bool found_gold);
+    bool move_to_opponent();
+    void fight_opponent(bool found_opponent);
 
     static int instance_count;
     static int current_player;
@@ -29,6 +34,7 @@ public:
 
 private:
     std::string name;
+    utils::vec2<int> position;
     soh::treasury& treasury;
     soh::army& army;
     soh::map& map;

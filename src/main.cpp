@@ -29,28 +29,24 @@ int main(int argc, char* argv[])
 
 	treasury.ready = true;
 
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	soh::player player_0{ "player_0", treasury, army, map, visualization };
+	soh::player player_1{ "player_1", treasury, army, map, visualization };
+	soh::player player_2{ "player_2", treasury, army, map, visualization };
+	soh::player player_3{ "player_3", treasury, army, map, visualization };
 
+    {
+        std::scoped_lock lk{ soh::player::mutex };
+        soh::player::current_player = 0;
+    }
+    soh::player::cv.notify_all();
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
 	treasury.ready = false;
-
-	// soh::player player_0{ "player_0", treasury, army, map };
-	// soh::player player_1{ "player_1", treasury, army, map };
-	// soh::player player_2{ "player_2", treasury, army, map };
-	// soh::player player_3{ "player_3", treasury, army, map };
-
-    // {
-    //     std::scoped_lock lk{ soh::player::mutex };
-    //     soh::player::current_player = 0;
-    // }
-    // soh::player::cv.notify_all();
-
-	// std::this_thread::sleep_for(std::chrono::seconds(1));
-
-	// {
-    //     std::scoped_lock lk{ soh::player::mutex };
-    //     soh::player::gameover = true;
-    // }
-    // soh::player::cv.notify_all();
+	{
+        std::scoped_lock lk{ soh::player::mutex };
+        soh::player::gameover = true;
+    }
+    soh::player::cv.notify_all();
 
 	visualization.halt();
 	

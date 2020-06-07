@@ -74,7 +74,7 @@ private:
     std::string get_description(soh::player_state state) const;
 
 private:
-    const int default_column_width{ 20 };
+    const int default_column_width{ 18 };
 
     std::mutex mutex_terminal;
     soh::curses_wrapper cw;

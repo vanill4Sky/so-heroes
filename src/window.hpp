@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <ncurses.h>
 #include <sstream>
 #include <iomanip>
@@ -76,9 +77,8 @@ private:
 template<typename ...Args>
 void soh::window::print_header(Args&&... args) const
 {
-    std::stringstream ss;
-    ((ss << args.first << std::setw(args.second)), ...);
-    print(ss.str(), 0, 0, 0);
+    auto row{ utils::format_row(std::forward<Args>(args)...) };
+    print(row, 0, 0, 0);
     print(std::string(get_size().x - 1, '-' ), 1, 0, 0);
     update();
 }
