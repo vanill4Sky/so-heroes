@@ -10,6 +10,21 @@ soh::map::map(size_t width, size_t height,
     generate_level(maxTreasures, maxCreatures);
 }
 
+size_t soh::map::get_width() const
+{
+    return width;
+}
+
+size_t soh::map::get_height() const
+{
+    return height;
+}
+
+const std::vector<int>& soh::map::get_map() const
+{
+    return level;
+}
+
 void soh::map::generate_level(float maxTreasures, float maxCreatures)
 {
     assert(maxTreasures >= 0.0f);

@@ -13,6 +13,10 @@ public:
 
     std::mutex mutex;
 
+    size_t get_width() const;
+    size_t get_height() const;
+    const std::vector<int>& get_map() const;
+ 
 private:
     void generate_level(float maxTreasures, float maxCreatures);
 

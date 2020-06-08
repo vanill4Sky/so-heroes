@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "configuration.hpp"
+
 soh::dwelling::dwelling(size_t id, std::string name, soh::treasury &treasury, 
     soh::army &army, soh::visualization& visualization)
     : id{ id }
@@ -27,23 +29,24 @@ void soh::dwelling::routine()
 
     do
     {
-        add_creatures(produce(10));
+        add_creatures(produce(soh::params::dwelling_produce_creature_price));
     } while (treasury.ready);
+
+    visualization.update_dwelling_info(id, soh::dwelling_state::finish, 1.0f, produced_amount);
 }
 
 int soh::dwelling::produce(int creature_price)
 {
-    constexpr int production_duration{20};
-
     visualization.update_dwelling_info(id, soh::dwelling_state::waiting, 0.0f, produced_amount);
     std::scoped_lock lk{treasury.mutex};
     visualization.update_dwelling_info(id, soh::dwelling_state::producing, 0.0f, produced_amount);
 
-    static thread_local std::uniform_int_distribution dist{1, 20};
+    static thread_local std::uniform_int_distribution dist{1, soh::params::dwelling_produce_periods};
     const auto sleep_period{dist(rng)};
     for (int i = 0; i < sleep_period; ++i)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds{production_duration});
+        std::this_thread::sleep_for(std::chrono::milliseconds{soh::params::dwelling_produce_quantum});
+
         auto progress = i / static_cast<float>(sleep_period);
         visualization.update_dwelling_info(id, soh::dwelling_state::producing, progress, produced_amount);
     }
@@ -58,19 +61,18 @@ int soh::dwelling::produce(int creature_price)
 
 void soh::dwelling::add_creatures(int creature_count)
 {
-    constexpr int addition_duration{20};
-
     if (creature_count > 0)
     {
         visualization.update_dwelling_info(id, soh::dwelling_state::waiting, 0.0f, produced_amount);
         std::scoped_lock lk{army.mutex};
         visualization.update_dwelling_info(id, soh::dwelling_state::adding, 0.0f, produced_amount);
 
-        static thread_local std::uniform_int_distribution dist{1, 20};
+        static thread_local std::uniform_int_distribution dist{1, soh::params::dwelling_add_max_periods};
         const auto sleep_period{dist(rng)};
         for (int i = 0; i < sleep_period; ++i)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds{addition_duration});
+            std::this_thread::sleep_for(std::chrono::milliseconds{soh::params::dwelling_add_quantum});
+
             auto progress = i / static_cast<float>(sleep_period);
             visualization.update_dwelling_info(id, soh::dwelling_state::adding, progress, produced_amount);
         }
@@ -78,7 +80,6 @@ void soh::dwelling::add_creatures(int creature_count)
         produced_amount += creature_count;
         army.size += creature_count;
 
-        visualization.update_army_size(army.size);
-        visualization.update_dwelling_info(id, soh::dwelling_state::finish, 1.0f, produced_amount);
+        visualization.update_army_size(army.size);;
     }
 }

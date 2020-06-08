@@ -78,6 +78,21 @@ void soh::visualization::add_player(size_t id, std::string name)
     update_player_info(id, soh::player_state::waiting, 0.0f);
 }
 
+void soh::visualization::add_map(size_t height, size_t width, const std::vector<int>& map_data)
+{
+    map_top = (game_map_window.get_size().y - height) / 2 - 2;
+    map_left = ((game_map_window.get_size().x - width) / 2);
+
+    for (size_t row = 0; row < height; ++row)
+    {
+        for (size_t col = 0; col < width; ++col)
+        {
+            draw_tile(row, col, map_data[row * width + col]);
+        }
+    }
+    game_map_window.update();
+}
+
 void soh::visualization::update_gold_mine_info(
     size_t id, soh::gold_mine_state new_state, float progress, size_t extracted_amount)
 {
@@ -154,9 +169,41 @@ void soh::visualization::update_army_size(int size)
     resources_window.update();
 }
 
+void soh::visualization::update_tile(int row, int col, int new_value, bool is_player)
+{
+    draw_tile(row, col, new_value, is_player);
+    game_map_window.update();
+}
+
 void soh::visualization::halt() const
 {
     player_info_window.stop();
+}
+
+void soh::visualization::draw_tile(int row, int col, int value, bool is_player)
+{
+    if (is_player)
+    {
+        game_map_window.print(std::to_string(value), row + map_top, col + map_left);
+    }
+    else
+    {
+        if (value == 0)
+        {
+            auto sc{ game_map_window.set_scoped_color(soh::color::white) };
+            game_map_window.print(".", row + map_top, col + map_left);
+        }
+        else if(value < 0)
+        {
+            auto sc{ game_map_window.set_scoped_color(soh::color::red) };
+            game_map_window.print("O", row + map_top, col + map_left);
+        }
+        else
+        {
+            auto sc{ game_map_window.set_scoped_color(soh::color::yellow) };
+            game_map_window.print("G", row + map_top, col + map_left);
+        }
+    }
 }
 
 std::string soh::visualization::make_progressbar(

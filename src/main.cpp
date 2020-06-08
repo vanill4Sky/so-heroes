@@ -19,9 +19,11 @@ void play()
 	
 	soh::treasury treasury;
 	soh::army army;
-	soh::map map{ 10, 10, 0.5f, 0.5f };
+	soh::map map{ soh::params::map_width, soh::params::map_height, 0.5f, 0.5f };
 
 	{
+		visualization.add_map(map.get_height(), map.get_width(), map.get_map());
+
 		std::vector<std::unique_ptr<soh::gold_mine>> gold_mines;
 		for (unsigned int i = 0; i < soh::params::gold_mine_count; ++i)
 		{
