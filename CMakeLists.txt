@@ -23,6 +23,7 @@ add_executable(so-heroes src/main.cpp
                src/window.hpp src/window.cpp
                src/curses_wrapper.hpp src/curses_wrapper.cpp
                src/visualization.hpp src/visualization.cpp
-               src/utils.hpp)
+               src/utils.hpp
+               src/configuration.hpp)
 
 target_link_libraries(so-heroes ${CURSES_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

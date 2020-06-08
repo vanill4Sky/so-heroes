@@ -29,6 +29,7 @@ soh::player::player(std::string name, soh::treasury& treasury,
 soh::player::~player()
 {
     --soh::player::instance_count;
+    visualization.update_player_info(id, soh::player_state::finish, 1.0f);
     thread.join();
 }
 
@@ -47,7 +48,7 @@ void soh::player::routine()
         collect_gold(found_gold);
         bool found_opponent{ move_to_opponent() };
         fight_opponent(found_opponent);
-        visualization.update_player_info(id, soh::player_state::waiting);
+        visualization.update_player_info(id, soh::player_state::waiting, 0.0f);
 
         if (!found_gold && !found_opponent) {
             gameover = true;
@@ -62,7 +63,7 @@ void soh::player::routine()
 
 bool soh::player::move_to_gold()
 {
-    visualization.update_player_info(id, soh::player_state::moving);
+    visualization.update_player_info(id, soh::player_state::moving, 0.0f);
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     return true;
@@ -71,14 +72,14 @@ bool soh::player::move_to_gold()
 void soh::player::collect_gold(bool found_gold)
 {
     if (found_gold) {
-        visualization.update_player_info(id, soh::player_state::collecting);
+        visualization.update_player_info(id, soh::player_state::collecting, 0.0f);
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 
 bool soh::player::move_to_opponent()
 {
-    visualization.update_player_info(id, soh::player_state::moving);
+    visualization.update_player_info(id, soh::player_state::moving, 0.0f);
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     return true;
@@ -87,7 +88,7 @@ bool soh::player::move_to_opponent()
 void soh::player::fight_opponent(bool found_opponent)
 {
     if (found_opponent) {
-        visualization.update_player_info(id, soh::player_state::fighting);
+        visualization.update_player_info(id, soh::player_state::fighting, 0.0f);
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }

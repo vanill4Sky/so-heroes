@@ -61,7 +61,7 @@ public:
     utils::vec2<size_t> get_size() const;
     void set_color(unsigned int fg, unsigned int bg) const;
     void unset_color(unsigned int fg, unsigned int bg) const;
-    soh::scoped_color set_scoped_color(soh::color fg, soh::color bg) const;
+    soh::scoped_color set_scoped_color(soh::color fg, soh::color bg = soh::color::black) const;
 
     friend class curses_wrapper;
 

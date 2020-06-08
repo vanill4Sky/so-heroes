@@ -18,7 +18,12 @@ class player
 public:
     player(std::string name, soh::treasury& treasury, 
         soh::army& army, soh::map& map, soh::visualization& visualization);
+    player(const player&) = delete;
+    player(player&&) = default;
     ~player();
+
+    player& operator=(const player&) = delete;
+    player& operator=(player&&) = delete;
 
     void routine();
     bool move_to_gold();

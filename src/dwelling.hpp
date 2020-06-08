@@ -16,7 +16,12 @@ class dwelling
 public:
     dwelling(size_t id, std::string name, soh::treasury& treasury, 
         soh::army& army, soh::visualization& visualization);
+    dwelling(const dwelling&) = delete;
+    dwelling(dwelling&&) = default;
     ~dwelling();
+
+    dwelling& operator=(const dwelling&) = delete;
+    dwelling& operator=(dwelling&&) = delete;
 
 private:
     void routine();

@@ -14,8 +14,13 @@ class gold_mine
 {
 public:
     gold_mine(size_t id, std::string name, soh::treasury& treasury, 
-    soh::visualization& visualization);
+        soh::visualization& visualization);
+    gold_mine(const gold_mine&) = delete;
+    gold_mine(gold_mine&&) = default;
     ~gold_mine();
+
+    gold_mine& operator=(const gold_mine&) = delete;
+    gold_mine& operator=(gold_mine&&) = delete;
 
 private:
     void routine();
