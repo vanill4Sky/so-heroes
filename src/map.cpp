@@ -93,6 +93,11 @@ utils::vec2<int> soh::map::nearest_entity(
     int min_distance{ std::numeric_limits<int>::max() };
     utils::vec2<int> nearest_entity;
 
+    if (entity_list.empty())
+    {
+        nearest_entity = player_pos;
+    }
+
     for (const auto entity_pos : entity_list)
     {
         auto distance{ utils::taxicab_distance(player_pos, entity_pos) };

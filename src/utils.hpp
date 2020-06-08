@@ -15,6 +15,16 @@ struct vec2
 	vec2() {}
 	vec2(T x, T y): x{x}, y{y} {}
 	T x, y;
+
+	bool operator==(const vec2<T>& rhs) const
+	{
+		return this->x == rhs.x && this->y == rhs.y;
+	}
+
+	bool operator!=(const vec2<T>& rhs) const
+	{
+		return !(this->x == rhs.x && this->y == rhs.y);
+	}
 };
 
 template <typename T>

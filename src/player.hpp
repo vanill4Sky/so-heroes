@@ -3,6 +3,7 @@
 #include <condition_variable>
 #include <string>
 #include <thread>
+#include <random>
 
 #include "army.hpp"
 #include "treasury.hpp"
@@ -44,6 +45,7 @@ private:
     soh::map& map;
     int id;
     utils::vec2<int> position;
+    std::default_random_engine rng;
     soh::visualization& visualization;
     std::thread thread;
 };

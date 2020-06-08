@@ -56,7 +56,8 @@ int soh::dwelling::produce(int creature_price)
     }
 
     int max_creature_count{treasury.gold / creature_price};
-    int produced_creature_count = std::min(dist(rng), max_creature_count);
+    int produced_creature_count = std::min(
+        soh::params::dwelling_produce_max_creatures_count, max_creature_count);
 
     treasury.gold -= produced_creature_count * creature_price;
 

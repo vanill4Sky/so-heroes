@@ -6,6 +6,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "configuration.hpp"
+
 int soh::player::instance_count{ 0 };
 int soh::player::current_player{ -1 };
 bool soh::player::gameover{ false };
@@ -20,6 +22,7 @@ soh::player::player(std::string name, soh::treasury& treasury,
     , map{ map }
     , id{ soh::player::instance_count }
     , position{ 0, 0 }
+    , rng{ std::random_device{}() }
     , visualization{ visualization }
     , thread{ &soh::player::routine, this }
 {
@@ -66,42 +69,98 @@ bool soh::player::move_to_gold()
 {
     visualization.update_player_info(id, soh::player_state::moving, 0.0f);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    auto treasure_position = map.nearest_treasure(position);
+    if (treasure_position != position)
+    {
+        visualization.update_tile(position.y, position.x, map.get_tile(position));
 
-    visualization.update_tile(position.y, position.x, map.get_tile(position));
-    position = map.nearest_treasure(position);
-    visualization.update_tile(position.y, position.x, id, true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(soh::params::player_move_quantum));
 
-    return true;
+        position = treasure_position;
+        visualization.update_tile(position.y, position.x, id, true);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void soh::player::collect_gold(bool found_gold)
 {
-    if (found_gold) {
+    if (found_gold) 
+    {
         visualization.update_player_info(id, soh::player_state::collecting, 0.0f);
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
         map.delete_treasure(position);
+
+        std::scoped_lock lk{ treasury.mutex };
+
+        static thread_local std::uniform_int_distribution dist_sleep{ 1, soh::params::player_collect_max_periods };
+        const auto sleep_period{ dist_sleep(rng) };
+        for (int i = 0; i < sleep_period; ++i)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds{ soh::params::player_collect_quantum });
+
+            auto progress = i / static_cast<float>(sleep_period);
+            visualization.update_player_info(id, soh::player_state::collecting, progress);
+        }
+
+        static thread_local std::uniform_int_distribution dist_gold{ 1, soh::params::gold_mine_dig_max_gold };
+
+        treasury.gold += dist_gold(rng);
     }
 }
 
 bool soh::player::move_to_opponent()
 {
     visualization.update_player_info(id, soh::player_state::moving, 0.0f);
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
-    visualization.update_tile(position.y, position.x, map.get_tile(position));
-    position = map.nearest_creature(position);
-    visualization.update_tile(position.y, position.x, id, true);
+    auto creature_position = map.nearest_creature(position);
+    if (creature_position != position)
+    {
+        visualization.update_tile(position.y, position.x, map.get_tile(position));
 
-    return true;
+        std::this_thread::sleep_for(std::chrono::milliseconds(soh::params::player_move_quantum));
+
+        position = creature_position;
+        visualization.update_tile(position.y, position.x, id, true);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void soh::player::fight_opponent(bool found_opponent)
 {
-    if (found_opponent) {
+    if (found_opponent) 
+    {
         visualization.update_player_info(id, soh::player_state::fighting, 0.0f);
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+        {
+            std::scoped_lock lk{ army.mutex };
+
+            if (army.size <= 0)
+            {
+                return;
+            }
+
+            static thread_local std::uniform_int_distribution dist_sleep{ 1, soh::params::player_fight_max_periods };
+            const auto sleep_period{ dist_sleep(rng) };
+            for (int i = 0; i < sleep_period; ++i)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds{ soh::params::player_fight_quantum });
+
+                auto progress = i / static_cast<float>(sleep_period);
+                visualization.update_player_info(id, soh::player_state::fighting, progress);
+            }
+
+            army.size -= (army.size * soh::params::player_fight_max_loss);
+        }
 
         map.delete_creature(position);
     }

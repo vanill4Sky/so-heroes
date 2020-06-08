@@ -15,28 +15,29 @@ namespace params
     const float map_max_treasures{ 0.3f }; // % of all entites
     const float map_max_creatures{ 0.3f }; // % of all entites
 
-    const int player_count { 10 };
-    const int player_move_quantum{ 20 };
-    const int player_collect_quantum{ 20 };
-    const int player_collect_max_periods{ 20 };
+    const int player_count { 4 };
+    const int player_move_quantum{ 1 };
+    const int player_collect_quantum{ 1 };
+    const int player_collect_max_periods{ 1 };
     const int player_collect_max_gold{ 2000 };
-    const int player_fight_quantum{ 20 };
-    const int player_fight_max_periods{ 20 };
+    const int player_fight_quantum{ 1 };
+    const int player_fight_max_periods{ 1 };
     const float player_fight_max_loss{ 0.3f }; // % of army
 
     const int gold_mine_count{ 10 };
-    const int gold_mine_dig_quantum{ 20 };
-    const int gold_mine_dig_periods{ 20 };
+    const int gold_mine_dig_quantum{ 1 };
+    const int gold_mine_dig_periods{ 1 };
     const int gold_mine_dig_max_gold{ 100 };
-    const int gold_mine_transport_quantum{ 20 };
-    const int gold_mine_transport_max_periods{ 20 };
+    const int gold_mine_transport_quantum{ 1 };
+    const int gold_mine_transport_max_periods{ 1 };
 
     const int dwelling_count{ 10 };
-    const int dwelling_produce_quantum{ 20 };
-    const int dwelling_produce_periods{ 20 };
+    const int dwelling_produce_quantum{ 1 };
+    const int dwelling_produce_periods{ 1 };
     const int dwelling_produce_creature_price{ 10 };
-    const int dwelling_add_quantum{ 20 };
-    const int dwelling_add_max_periods{ 20 };
+    const int dwelling_produce_max_creatures_count{ 100 };
+    const int dwelling_add_quantum{ 1 };
+    const int dwelling_add_max_periods{ 1 };
 
 } // namespace params
     
