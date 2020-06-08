@@ -146,7 +146,7 @@ void soh::visualization::update_player_info(
 void soh::visualization::update_gold_amount(int amount)
 {
     auto row{ utils::format_row(
-        std::make_pair("Gold", default_column_width), 
+        std::make_pair("Gold", 10), 
         std::make_pair(amount, default_column_width)) };
     
     std::scoped_lock lk{ mutex_terminal };
@@ -159,7 +159,7 @@ void soh::visualization::update_gold_amount(int amount)
 void soh::visualization::update_army_size(int size)
 {
     auto row{ utils::format_row(
-        std::make_pair("Army", default_column_width), 
+        std::make_pair("Army", 10), 
         std::make_pair(size, default_column_width)) };
     
     std::scoped_lock lk{ mutex_terminal };
@@ -171,6 +171,8 @@ void soh::visualization::update_army_size(int size)
 
 void soh::visualization::update_tile(int row, int col, int new_value, bool is_player)
 {
+    std::scoped_lock lk{ mutex_terminal };
+    
     draw_tile(row, col, new_value, is_player);
     game_map_window.update();
 }
@@ -184,6 +186,7 @@ void soh::visualization::draw_tile(int row, int col, int value, bool is_player)
 {
     if (is_player)
     {
+        auto sc{ game_map_window.set_scoped_color(soh::color::black, soh::color::white) };
         game_map_window.print(std::to_string(value), row + map_top, col + map_left);
     }
     else
@@ -196,7 +199,7 @@ void soh::visualization::draw_tile(int row, int col, int value, bool is_player)
         else if(value < 0)
         {
             auto sc{ game_map_window.set_scoped_color(soh::color::red) };
-            game_map_window.print("O", row + map_top, col + map_left);
+            game_map_window.print("C", row + map_top, col + map_left);
         }
         else
         {

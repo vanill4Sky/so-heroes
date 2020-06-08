@@ -19,6 +19,7 @@ soh::player::player(std::string name, soh::treasury& treasury,
     , army{ army }
     , map{ map }
     , id{ soh::player::instance_count }
+    , position{ 0, 0 }
     , visualization{ visualization }
     , thread{ &soh::player::routine, this }
 {
@@ -64,7 +65,12 @@ void soh::player::routine()
 bool soh::player::move_to_gold()
 {
     visualization.update_player_info(id, soh::player_state::moving, 0.0f);
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+    visualization.update_tile(position.y, position.x, map.get_tile(position));
+    position = map.nearest_treasure(position);
+    visualization.update_tile(position.y, position.x, id, true);
 
     return true;
 }
@@ -73,14 +79,20 @@ void soh::player::collect_gold(bool found_gold)
 {
     if (found_gold) {
         visualization.update_player_info(id, soh::player_state::collecting, 0.0f);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+        map.delete_treasure(position);
     }
 }
 
 bool soh::player::move_to_opponent()
 {
     visualization.update_player_info(id, soh::player_state::moving, 0.0f);
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+    visualization.update_tile(position.y, position.x, map.get_tile(position));
+    position = map.nearest_creature(position);
+    visualization.update_tile(position.y, position.x, id, true);
 
     return true;
 }
@@ -89,6 +101,8 @@ void soh::player::fight_opponent(bool found_opponent)
 {
     if (found_opponent) {
         visualization.update_player_info(id, soh::player_state::fighting, 0.0f);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+        map.delete_creature(position);
     }
 }

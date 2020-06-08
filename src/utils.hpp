@@ -40,4 +40,10 @@ std::string format_row(Args&&... args)
 	return ss.str();
 }
 
+template <typename T>
+T taxicab_distance(utils::vec2<T> a, utils::vec2<T> b)
+{
+	return static_cast<T>(std::abs(a.x - b.x)) +  static_cast<T>(std::abs(a.y - b.y)); 
+}
+
 }

@@ -19,7 +19,8 @@ void play()
 	
 	soh::treasury treasury;
 	soh::army army;
-	soh::map map{ soh::params::map_width, soh::params::map_height, 0.5f, 0.5f };
+	soh::map map{ soh::params::map_width, soh::params::map_height, 
+		soh::params::map_max_treasures, soh::params::map_max_creatures };
 
 	{
 		visualization.add_map(map.get_height(), map.get_width(), map.get_map());

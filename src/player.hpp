@@ -39,11 +39,11 @@ public:
 
 private:
     std::string name;
-    utils::vec2<int> position;
     soh::treasury& treasury;
     soh::army& army;
     soh::map& map;
     int id;
+    utils::vec2<int> position;
     soh::visualization& visualization;
     std::thread thread;
 };

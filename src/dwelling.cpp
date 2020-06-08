@@ -39,6 +39,10 @@ int soh::dwelling::produce(int creature_price)
 {
     visualization.update_dwelling_info(id, soh::dwelling_state::waiting, 0.0f, produced_amount);
     std::scoped_lock lk{treasury.mutex};
+
+    if (treasury.gold < creature_price)
+        return 0;
+
     visualization.update_dwelling_info(id, soh::dwelling_state::producing, 0.0f, produced_amount);
 
     static thread_local std::uniform_int_distribution dist{1, soh::params::dwelling_produce_periods};
@@ -55,6 +59,8 @@ int soh::dwelling::produce(int creature_price)
     int produced_creature_count = std::min(dist(rng), max_creature_count);
 
     treasury.gold -= produced_creature_count * creature_price;
+
+    visualization.update_gold_amount(treasury.gold);;
 
     return produced_creature_count;
 }
