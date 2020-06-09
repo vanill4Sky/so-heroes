@@ -62,6 +62,7 @@ public:
     void set_color(unsigned int fg, unsigned int bg) const;
     void unset_color(unsigned int fg, unsigned int bg) const;
     soh::scoped_color set_scoped_color(soh::color fg, soh::color bg = soh::color::black) const;
+    char get_char() const;
 
     friend class curses_wrapper;
 

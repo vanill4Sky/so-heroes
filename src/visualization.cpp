@@ -177,9 +177,14 @@ void soh::visualization::update_tile(int row, int col, int new_value, bool is_pl
     game_map_window.update();
 }
 
-void soh::visualization::halt() const
+void soh::visualization::pause() const
 {
     player_info_window.stop();
+}
+
+char soh::visualization::get_char() const
+{
+    return player_info_window.get_char();
 }
 
 void soh::visualization::draw_tile(int row, int col, int value, bool is_player)

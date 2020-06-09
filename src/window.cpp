@@ -106,3 +106,8 @@ soh::scoped_color soh::window::set_scoped_color(soh::color fg, soh::color bg) co
 {
     return {*this, fg, bg};
 }
+
+char soh::window::get_char() const
+{
+    return static_cast<char>(wgetch(win_ptr));
+}

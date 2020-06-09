@@ -25,7 +25,7 @@ public:
 
 private:
     void routine();
-    int produce(int creature_price);
+    int produce();
     void add_creatures(int creature_count);
 
     size_t id;

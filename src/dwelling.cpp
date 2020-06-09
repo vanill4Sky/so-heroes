@@ -29,19 +29,20 @@ void soh::dwelling::routine()
 
     do
     {
-        add_creatures(produce(soh::params::dwelling_produce_creature_price));
+        add_creatures(produce());
     } while (treasury.ready);
 
     visualization.update_dwelling_info(id, soh::dwelling_state::finish, 1.0f, produced_amount);
 }
 
-int soh::dwelling::produce(int creature_price)
+int soh::dwelling::produce()
 {
     visualization.update_dwelling_info(id, soh::dwelling_state::waiting, 0.0f, produced_amount);
-    std::scoped_lock lk{treasury.mutex};
 
-    if (treasury.gold < creature_price)
+    if (treasury.gold < soh::params::dwelling_produce_creature_price)
+    {
         return 0;
+    }
 
     visualization.update_dwelling_info(id, soh::dwelling_state::producing, 0.0f, produced_amount);
 
@@ -55,15 +56,7 @@ int soh::dwelling::produce(int creature_price)
         visualization.update_dwelling_info(id, soh::dwelling_state::producing, progress, produced_amount);
     }
 
-    int max_creature_count{treasury.gold / creature_price};
-    int produced_creature_count = std::min(
-        soh::params::dwelling_produce_max_creatures_count, max_creature_count);
-
-    treasury.gold -= produced_creature_count * creature_price;
-
-    visualization.update_gold_amount(treasury.gold);;
-
-    return produced_creature_count;
+    return soh::params::dwelling_produce_creature_price;
 }
 
 void soh::dwelling::add_creatures(int creature_count)
@@ -71,7 +64,7 @@ void soh::dwelling::add_creatures(int creature_count)
     if (creature_count > 0)
     {
         visualization.update_dwelling_info(id, soh::dwelling_state::waiting, 0.0f, produced_amount);
-        std::scoped_lock lk{army.mutex};
+        std::scoped_lock lk{army.mutex, treasury.mutex};
         visualization.update_dwelling_info(id, soh::dwelling_state::adding, 0.0f, produced_amount);
 
         static thread_local std::uniform_int_distribution dist{1, soh::params::dwelling_add_max_periods};
@@ -84,9 +77,15 @@ void soh::dwelling::add_creatures(int creature_count)
             visualization.update_dwelling_info(id, soh::dwelling_state::adding, progress, produced_amount);
         }
 
-        produced_amount += creature_count;
-        army.size += creature_count;
+        int max_creature_count{treasury.gold / soh::params::dwelling_produce_creature_price};
+        int produced_creature_count = std::min(
+            creature_count, max_creature_count);
 
+        produced_amount += produced_creature_count;
+        army.size += produced_creature_count;
+        treasury.gold -= produced_creature_count * soh::params::dwelling_produce_creature_price;
+
+        visualization.update_gold_amount(treasury.gold);;
         visualization.update_army_size(army.size);;
     }
 }

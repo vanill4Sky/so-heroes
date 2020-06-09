@@ -68,7 +68,8 @@ public:
     void update_army_size(int size);
     void update_tile(int row, int col, int new_value, bool is_player = false);
 
-    void halt() const;
+    void pause() const;
+    char get_char() const;
 
 private:
     visualization();
