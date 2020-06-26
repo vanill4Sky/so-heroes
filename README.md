@@ -3,6 +3,8 @@ Systemy operacyjne 2
 Symulator gry *Heroes of Might and Magic III*
 --------------------------------------------------------------
 
+![Running simulation](/docs/running_simulation.png)
+
 ## 1. Opis
 Celem projektu jest stworzenie modelu gry *Heroes III*. Jest to strategiczna gra turowa. Rozgrywka polega na eksploracji mapy gry i rozbudowie zamku oraz zwiększaniu liczebności armii przy wykorzystaniu surowców produkowanych przez kopalnie.  
 Dla uproszczenie jedynym typem surowców będzie złoto, a jednostki nie będą podzielone na odrębne rodzaje. Liczba siedlisk jednostek i kopalni będzie ustana przy rozpoczęciu symulacji. Wszystkie wątki *gracz* będą współdzieliły te same zasoby. 
